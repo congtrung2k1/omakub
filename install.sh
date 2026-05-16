@@ -6,6 +6,15 @@ set -e
 # Give people a chance to retry running the installation
 trap 'echo "Omakub installation failed! You can retry by running: source ~/.local/share/omakub/install.sh"' ERR
 
+# Refuse to run via sudo. See setup-local.sh for the rationale; running as
+# root corrupts $HOME-based paths and disconnects us from the user GNOME
+# session bus that gext needs.
+if [ -n "$SUDO_USER" ] && [ "$EUID" -eq 0 ]; then
+  echo "$(tput setaf 1)Error: Do not run Omakub with sudo." >&2
+  echo "Run as your normal (non-root) user; the installer will sudo when needed." >&2
+  return 1 2>/dev/null || exit 1
+fi
+
 # Check the distribution name and version and abort if incompatible
 source ~/.local/share/omakub/install/check-version.sh
 

@@ -1,12 +1,15 @@
 #!/bin/bash
 
-# Add the official Docker repo
+# Add the official Docker repo (Debian repo + bookworm codename for Kali rolling).
+# Kali's own VERSION_CODENAME is "kali-rolling" which Docker doesn't publish for,
+# so we pin to bookworm per Kali community guidance.
+DOCKER_CODENAME="${DOCKER_CODENAME:-bookworm}"
 if [ ! -f /etc/apt/sources.list.d/docker.list ]; then
     [ -f /etc/apt/keyrings/docker.asc ] && sudo rm /etc/apt/keyrings/docker.asc
     sudo install -m 0755 -d /etc/apt/keyrings
-    sudo wget -qO /etc/apt/keyrings/docker.asc https://download.docker.com/linux/ubuntu/gpg
+    sudo wget -qO /etc/apt/keyrings/docker.asc https://download.docker.com/linux/debian/gpg
     sudo chmod a+r /etc/apt/keyrings/docker.asc
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian ${DOCKER_CODENAME} stable" | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
 fi
 
 # Install Docker engine and standard plugins

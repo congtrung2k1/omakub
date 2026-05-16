@@ -12,7 +12,6 @@ CHOICES=(
   "Discord           Communication platform for voice, video, and text messaging"
   "Gimp              Image manipulation tool ala Photoshop"
   "Geekbench         CPU benchmaking tool"
-  "Mainline Kernels  Install newer Linux kernels than Ubuntu defaults"
   "Minecraft         Everyone's favorite blocky building game"
   "OBS Studio        Record screencasts with inputs from both display + webcam"
   "Ollama            Run LLMs, like Meta's Llama3, locally"

@@ -1,8 +1,6 @@
 #!/bin/bash
 
-# Display system information in the terminal
-sudo add-apt-repository -y ppa:zhangsongcui3371/fastfetch
-sudo apt update -y
+# Display system information in the terminal (fastfetch is in the Kali rolling repo)
 sudo apt install -y fastfetch
 
 # Only attempt to set configuration if fastfetch is not already set

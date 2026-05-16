@@ -11,15 +11,19 @@ ascii_art='________                  __        ___.
 '
 
 echo -e "$ascii_art"
-echo "=> Omakub is for fresh Ubuntu 24.04+ installations only!"
+echo "=> Omakub is for fresh Kali Linux 2025.1+ GNOME installations only!"
+echo "   (For installing from a local checkout instead of cloning, use setup-local.sh.)"
 echo -e "\nBegin installation (or abort with ctrl+c)..."
 
 sudo apt-get update >/dev/null
 sudo apt-get install -y git >/dev/null
 
-echo "Cloning Omakub..."
+# Set OMAKUB_REPO to your own fork (e.g. https://github.com/youruser/omakub.git) if you forked.
+OMAKUB_REPO="${OMAKUB_REPO:-https://github.com/basecamp/omakub.git}"
+
+echo "Cloning Omakub from $OMAKUB_REPO..."
 rm -rf ~/.local/share/omakub
-git clone https://github.com/basecamp/omakub.git ~/.local/share/omakub >/dev/null
+git clone "$OMAKUB_REPO" ~/.local/share/omakub >/dev/null
 if [[ $OMAKUB_REF != "master" ]]; then
 	cd ~/.local/share/omakub
 	git fetch origin "${OMAKUB_REF:-stable}" && git checkout "${OMAKUB_REF:-stable}"

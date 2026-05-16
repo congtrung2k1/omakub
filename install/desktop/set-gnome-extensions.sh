@@ -1,13 +1,34 @@
 #!/bin/bash
 
-sudo apt install -y gnome-shell-extension-manager gir1.2-gtop-2.0 gir1.2-clutter-1.0
+sudo apt install -y gnome-shell-extension-manager gir1.2-gtop-2.0 gir1.2-clutter-1.0 libglib2.0-bin
 pipx install gnome-extensions-cli --system-site-packages
 
-# Turn off default Ubuntu extensions
-gnome-extensions disable tiling-assistant@ubuntu.com
-gnome-extensions disable ubuntu-appindicators@ubuntu.com
-gnome-extensions disable ubuntu-dock@ubuntu.com
-gnome-extensions disable ding@rastersoft.com
+# gext (gnome-extensions-cli) drives extension install over the session DBus.
+# If GNOME Shell isn't running on this user's session bus, we'd flood the log
+# with "org.gnome.Shell ServiceUnknown" errors and then poison every gsettings
+# call with "No such schema". This happens when:
+#   - the installer was launched outside a GNOME graphical session
+#     (over SSH, from a TTY, or as a different user via sudo/su), or
+#   - GNOME Shell hasn't started yet (e.g. running before first GNOME login).
+# In any of those cases, skip extension install entirely. The user can re-run
+# `source ~/.local/share/omakub/install/desktop/set-gnome-extensions.sh`
+# (or just `omakub` from the menu) from a real GNOME-session terminal.
+if ! command -v gdbus >/dev/null 2>&1 || \
+   ! gdbus introspect --session --dest org.gnome.Shell \
+       --object-path /org/gnome/Shell >/dev/null 2>&1; then
+  echo "$(tput setaf 3)Warning: GNOME Shell is not reachable on this session bus."
+  echo "Skipping GNOME extension install/configure."
+  echo "Log in to GNOME as your normal user, open a Terminal, and re-run:"
+  echo "  source ~/.local/share/omakub/install/desktop/set-gnome-extensions.sh"
+  return 0 2>/dev/null || exit 0
+fi
+
+# Disable preinstalled extensions that conflict with what Omakub installs.
+# Kali GNOME ships pop-shell tiling and may include ding desktop icons; both are
+# replaced/superseded by Tactile + a clean overview. Use || true since the exact
+# preinstalled set varies between Kali images.
+gnome-extensions disable pop-shell@system76.com || true
+gnome-extensions disable ding@rastersoft.com || true
 
 # Pause to assure user is ready to accept confirmations
 gum confirm "To install Gnome extensions, you need to accept some confirmations. Ready?"
