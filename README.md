@@ -17,7 +17,7 @@ bash ~/Desktop/omakub/setup-local.sh
 ### From a remote clone (after you push your fork)
 
 ```bash
-OMAKUB_REPO=https://github.com/<you>/omakub.git bash -c "$(curl -fsSL https://raw.githubusercontent.com/<you>/omakub/master/boot.sh)"
+OMAKUB_REPO=https://github.com/congtrung2k1/omakub.git bash -c "$(curl -fsSL https://raw.githubusercontent.com/congtrung2k1/omakub/master/boot.sh)"
 ```
 
 ## What's different from upstream
